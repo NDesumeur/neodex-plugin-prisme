@@ -302,6 +302,14 @@ export default async function (ctx) {
   if (!ctx.host) { view.textContent = "Ce plugin doit être approuvé par NeoDex pour s'ouvrir."; return; }
   const host = ctx.host, { el, toast, sfx } = host;
   const folder = ctx.folder;
+  // « neo.musicXxx » va au côté système de NeoMusic (son main.js), comme dans Rythme
+  const MU_ID = 'neodex.music', MU_EV = { onMusicHotkey: 'music:hotkey', onMusicProgress: 'music:progress' };
+  const neo = new Proxy({}, { get: (_, k) => { const n = ctx.neo;
+    if (typeof k !== 'string') return n[k];
+    if (MU_EV[k]) return cb => n.onPluginMain(e => { if (e.id === MU_ID && e.name === MU_EV[k]) cb(e.data); });
+    const m = /^music([A-Z]\w*)$/.exec(k);
+    return m ? (...a) => n.pluginMain(MU_ID, 'music:' + m[1][0].toLowerCase() + m[1].slice(1), ...a) : n[k];
+  } });
   host.addStyle(CSS);
   view.innerHTML = HTML;
   pxSkin(view.querySelector('.appWrap'), { title: "PRISME", T: {"k": "#0a0814", "k2": "#141024", "fill": "#1e1834", "fillOn": "#2a2246", "hl": "#362c58", "line": "#544680", "acc": "#ff4fa8", "accL": "#ffb0d8", "accS": "#c02a7a", "accD": "#4a0a2a", "rivet": "#ffb0d8", "btn": "#362c58", "btnHi": "#6a5aa0", "btnLo": "#141024", "btnHov": "#463a70", "btnHovHi": "#8a7ac0", "text": "#f4f0ff", "muted": "#b8b0d8", "acc2": "#ffd84a", "gold": "#ffd84a", "orange": "#ffa030", "red": "#ff4a5a", "green": "#7ee07a", "green2": "#2f8a3a", "bg": "#0c0a18", "bgDot": "#1e1834", "bgDot2": "#141024", "spark": "#544680", "spark2": "#ffd84a", "tile": ["................", "...:............", "................", "..........+.....", "................", "................", ".....:..........", "................", "................", ".............:..", "................", "..+.............", "................", ".........:......", "................", "................"]},

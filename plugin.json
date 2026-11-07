@@ -1,7 +1,7 @@
 {
   "id": "neodex.prisme",
   "name": "Prisme",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "NDesumeur",
   "description": "Un jeu de rythme en étoile : les notes jaillissent d'un cristal et filent vers quatre socles. Frappe la bonne flèche quand elles s'y posent. Les 200 morceaux de Rythme, ou ta propre musique.",
   "icon": "icon.png",
