@@ -932,7 +932,19 @@ function rhOpen() {
 const PR = {CX: 120, CY: 124, D: 86, COLS: ['#ff4fa8', '#3fe0ff', '#5fdf6a', '#ffd84a'], DIRS: [[-1, 0], [0, 1], [0, -1], [1, 0]], KEYS: [['ArrowLeft', 'q', 'a'], ['ArrowDown', 's'], ['ArrowUp', 'z', 'w'], ['ArrowRight', 'd']], NAMES: ['←', '↓', '↑', '→']};
 const RHG = {key: 'prisme', factor: .85, color: '#ff4fa8',
   help: [['Flèches (ou ZQSD) quand la note arrive dans son socle', '#e8e0ff'], ['Maintiens la touche sur les notes longues', '#c8f8ff']],
-  chart: base => base.map(n => ({t: n.t, lane: n.lane, len: n.len})),  // les quatre voies de Rythme, dans quatre directions
+  // les notes de Rythme, allégées : en étoile, elles se lisent moins bien qu'en colonnes. Un écart minimum selon la difficulté, rien d'autre à frapper
+  // pendant une note tenue, et des accords seulement en Difficile et Expert, au plus un toutes les deux mesures (une en Expert)
+  chart(base, c, diff) {
+    const lv = {facile: 0, normal: 1, difficile: 2, expert: 3}[rhTier(diff)] ?? 1, gap = [.5, .32, .22, .16][lv], chordGap = c.step * [0, 0, 32, 16][lv], out = [];
+    let free = -9, lastChord = -99;
+    for (const n of base) {
+      const p = out.at(-1);
+      if (p && Math.abs(p.t - n.t) < .01) { if (lv >= 2 && !p.len && !n.len && n.lane !== p.lane && n.t - lastChord >= chordGap) { out.push({t: p.t, lane: n.lane, len: 0}); lastChord = n.t; } continue; }
+      if (n.t < free) continue;
+      out.push({t: n.t, lane: n.lane, len: n.len || 0}); free = n.t + (n.len || 0) + (n.len ? .12 : gap);
+    }
+    return out;
+  },
   reset() { Object.assign(rh, {down: [false, false, false, false], flash: [0, 0, 0, 0], judge: null}); },
   update() {
     const now = rhNow(), late = RH.WIN.at(-1)[0] / PR_PK;
@@ -976,7 +988,7 @@ function prSocle(l, on, ready) {  // un socle en losange, plus clair quand on ap
 }
 function prDraw() {
   const live = rh.mode === 'play' || rh.mode === 'pause', now = live ? rhNow() : -2, beat = 60 / rh.info.bpm, ph = ((now - (rh.c.beat0 || 0)) % beat + beat) % beat, pulse = now > 0 ? Math.max(0, 1 - ph / beat * 3) : 0;
-  const app = rh.stars > 6 ? 1.05 : rh.stars > 3 ? 1.3 : 1.6, sp = (PR.D - 10) / app;
+  const app = rh.stars > 6 ? 1.3 : rh.stars > 3 ? 1.55 : 1.85, sp = (PR.D - 10) / app;
   g.drawImage(PR_BG, 0, 0);
   for (let l = 0; l < 4; l++) if (rh.flash?.[l] || rh.down?.[l]) { const [dx, dy] = PR.DIRS[l]; g.globalAlpha = rh.down[l] ? .35 : rh.flash[l] / 24; for (let d = 14; d < PR.D; d += 2) px(g, PR.COLS[l], PR.CX + dx * d - (dy ? 1 : 0), PR.CY + dy * d - (dx ? 1 : 0), dy ? 3 : 1, dx ? 3 : 1); g.globalAlpha = 1; }
   for (let l = 0; l < 4; l++) prSocle(l, rh.down?.[l], live && rh.notes.some(n => !n.judged && n.lane === l && Math.abs(n.t - now) <= RH.WIN[1][0] / PR_PK));
@@ -1020,12 +1032,13 @@ cv.onpointerdown = e => {  // à la souris : cliquer du côté du socle visé
   for (const l of ls) prKey(l, true);
   const id = e.pointerId, up = ev => { if (ev.pointerId !== id) return; for (const l of ls) prKey(l, false); removeEventListener('pointerup', up); }; addEventListener('pointerup', up);  // chaque doigt relâche seulement ses directions
 };
-{  // vérification : chaque touche mène à une seule direction, et les notes gardent les 4 voies de Rythme
+{  // vérification : chaque touche mène à une seule direction ; les notes gardent les 4 voies, avec un écart minimum, rien pendant une note tenue, pas d'accord en Facile
   const all = PR.KEYS.flat(); const c = rhCompose(RH_SONGS[7]), x = RHG.chart(rhChart(c, 'expert'), c, 'expert');
   // deux touches au même instant valent chacune leur note d'un accord
   rhAudio(); const keep = rh; rh = {mode: 'play', t0: 0, down: [false, false, false, false], flash: [0, 0, 0, 0], sparks: [], combo: 0, maxCombo: 0, score: 0, dts: [], counts: {PARFAIT: 0, BIEN: 0, OK: 0, 'RATÉ': 0}, notes: []};
   const t0 = rhNow(); rh.notes = [{t: t0, lane: 0, len: 0}, {t: t0, lane: 3, len: 0}]; prKey(0, true); prKey(3, true); const both = rh.notes.every(n => n.judged && !n.missed); rh = keep;
-  console.assert(new Set(all).size === all.length && x.every(n => n.lane >= 0 && n.lane < 4) && x.some(n => n.len > 0) && both, 'prisme', both);
+  const f = RHG.chart(rhChart(c, 'facile'), c, 'facile'), spaced = f.every((n, i) => !i || n.t - f[i - 1].t >= .5 - 1e-6 || n.t >= f[i - 1].t + f[i - 1].len + .12 - 1e-6);
+  console.assert(new Set(all).size === all.length && x.every(n => n.lane >= 0 && n.lane < 4) && x.some(n => n.len > 0) && both && spaced && x.every((n, i) => !i || n.t >= x[i - 1].t + x[i - 1].len), 'prisme', both, spaced);
 }
 ctx.onOpen(() => rhOpen());
 

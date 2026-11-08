@@ -22,7 +22,7 @@ Les points d'une note augmentent de 1 % par note de combo, jusqu'au double à 10
 
 ## Chansons
 
-L'onglet **Chansons** reprend les 200 morceaux de Rythme. La difficulté de chaque niveau est calculée d'après ses notes, de 1 à 10 étoiles ; plus elle est haute, plus les notes arrivent vite.
+L'onglet **Chansons** reprend les 200 morceaux de Rythme. La difficulté de chaque niveau est calculée d'après ses notes, de 1 à 10 étoiles ; plus elle est haute, plus les notes arrivent vite. Les niveaux sont plus légers que dans Rythme, parce qu'en étoile les notes se lisent moins bien qu'en colonnes : un écart minimum entre les notes, rien d'autre à frapper pendant une note tenue, et des accords seulement en Difficile et Expert.
 
 ## Mes musiques
 
@@ -31,6 +31,7 @@ Dans **Mes musiques**, crée un niveau à partir d'un **fichier audio** importé
 ## Réglages
 
 - **Volume** de la musique.
+- **Son des clics** : le son joué à chaque note touchée, au choix parmi 10 (Doux, Clap, Bois, Grosse caisse, Cristal, Pop, Charleston, Caisse claire, Pluck, Tok) ou aucun. Perdre un combo de 10 ou plus joue un son « combo cassé ».
 - **Décalage** (−300 à +300 ms) : il se règle tout seul après chaque partie. Si tu frappes en moyenne en retard ou en avance, le jeu corrige une bonne partie de l'écart ; tu peux aussi le changer à la main.
 
 ## Données et synchronisation
