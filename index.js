@@ -938,7 +938,6 @@ function prDraw() {
     if (rh.judge && rh.mode === 'play') { const [x, y] = prPad(rh.judge.lane), off = rh.judge.lane === 1 ? 18 : -14; pxFont(g, rh.judge.text, x, y + off, rh.judge.col, 6, 'center'); }
     pxFont(g, rhStarTxt(rh.stars), 4, H - 6, '#6a5a9a', 6);
   }
-  if (rh.mode === 'play' && now < 0) pxFont(g, String(Math.ceil(-now)), PR.CX, 30, '#ffd84a', 16, 'center');
   rhScreens(86);
 }
 const prLane = e => { const k = e.key.length === 1 ? e.key.toLowerCase() : e.key; return PR.KEYS.findIndex(ks => ks.includes(k)); };
