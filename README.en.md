@@ -1,6 +1,6 @@
 # Prisme (Prism)
 
-A keyboard rhythm game: notes burst from a crystal in the middle of the screen and fly towards four pads, left, down, up and right. Hit the right arrow when the note lands in its pad. Play the 200 tracks from the Rythme plugin, or your own music.
+A keyboard rhythm game: notes burst from a crystal in the middle of the screen and fly towards four pads, left, down, up and right. Hit the right arrow when the note lands in its pad. Play the 1200 tracks from the Rythme plugin, or your own music.
 
 *Version française : [README.md](README.md)*
 
@@ -22,7 +22,7 @@ At the end, accuracy gives a grade: **S** from 95 %, **A** at 90 %, **B** at 80 
 
 ## Songs
 
-The **Songs** tab offers the 200 Rythme tracks. Each level's difficulty is worked out from its notes, from 1 to 10 stars; the higher it is, the faster the notes come. Levels are lighter than in Rythme, because notes in a star shape are harder to read than in columns: a minimum gap between notes, nothing else to hit during a held note, and chords only in Hard and Expert.
+The **Songs** tab offers the 1200 Rythme tracks. Each level's difficulty is worked out from its notes, from 1 to 10 stars; the higher it is, the faster the notes come. Levels are lighter than in Rythme, because notes in a star shape are harder to read than in columns: a minimum gap between notes, nothing else to hit during a held note, and chords only in Hard and Expert.
 
 ## My music
 

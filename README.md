@@ -1,6 +1,6 @@
 # Prisme
 
-Un jeu de rythme au clavier : les notes jaillissent d'un cristal au centre de l'écran et filent vers quatre socles, à gauche, en bas, en haut et à droite. Frappe la bonne flèche quand la note se pose dans son socle. Joue les 200 morceaux du plugin Rythme, ou ta propre musique.
+Un jeu de rythme au clavier : les notes jaillissent d'un cristal au centre de l'écran et filent vers quatre socles, à gauche, en bas, en haut et à droite. Frappe la bonne flèche quand la note se pose dans son socle. Joue les 1200 morceaux du plugin Rythme, ou ta propre musique.
 
 *English version: [README.en.md](README.en.md)*
 
@@ -22,7 +22,7 @@ Les points d'une note augmentent de 1 % par note de combo, jusqu'au double à 10
 
 ## Chansons
 
-L'onglet **Chansons** reprend les 200 morceaux de Rythme. La difficulté de chaque niveau est calculée d'après ses notes, de 1 à 10 étoiles ; plus elle est haute, plus les notes arrivent vite. Les niveaux sont plus légers que dans Rythme, parce qu'en étoile les notes se lisent moins bien qu'en colonnes : un écart minimum entre les notes, rien d'autre à frapper pendant une note tenue, et des accords seulement en Difficile et Expert.
+L'onglet **Chansons** reprend les 1200 morceaux de Rythme. La difficulté de chaque niveau est calculée d'après ses notes, de 1 à 10 étoiles ; plus elle est haute, plus les notes arrivent vite. Les niveaux sont plus légers que dans Rythme, parce qu'en étoile les notes se lisent moins bien qu'en colonnes : un écart minimum entre les notes, rien d'autre à frapper pendant une note tenue, et des accords seulement en Difficile et Expert.
 
 ## Mes musiques
 
