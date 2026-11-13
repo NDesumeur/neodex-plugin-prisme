@@ -1,9 +1,9 @@
 {
   "pluginId": "neodex.prisme",
   "repo": "NDesumeur/neodex-plugin-prisme",
-  "version": "1.0.7",
-  "sha256": "99d8697efc7d9fa8708ba130596f7a6a47234c3826274ef936c6cb45ecf5d1f2",
-  "approvedAt": "2026-11-12T12:24:45.305Z",
+  "version": "1.0.8",
+  "sha256": "a9a034b0b7a4bda67385b96304269d53f0abe74b4a2c514bf12e83c46aaa70a5",
+  "approvedAt": "2026-11-13T12:08:21.166Z",
   "neobase": ">=4.1.0",
-  "signature": "e0PLQkA5Ng0TLvv02IXPcOjpe5Hj8fb+ow3wcr06U2aciG19vg9p9/oTX4sPudI9jNnG5nWZfctT0ZOYY8eQBQ=="
+  "signature": "KERtaQioXkHJJT+nbLzKnB2Lueozzj09uzsOoFE5odYUY5Z30gjbVkaittphpWU5RzfFzKROmyLtNrf6LB2QCA=="
 }
