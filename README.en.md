@@ -20,6 +20,10 @@ A note's points rise by 1 % per note of combo, up to double at 100 notes in a ro
 
 At the end, accuracy gives a grade: **S** from 95 %, **A** at 90 %, **B** at 80 %, **C** at 70 %, **D** below. Score and grade are kept for each level.
 
+## End screen
+
+At the end of the song, under the grade, a curve shows your accuracy along the song: at the top, all Perfect; green when it's right, yellow when it slips, red when it falls apart. The small red marks underneath show the missed notes. You see at once which part to practise.
+
 ## Songs
 
 The **Songs** tab offers the 1200 Rythme tracks. Each level's difficulty is worked out from its notes, from 1 to 10 stars; the higher it is, the faster the notes come. Levels are lighter than in Rythme, because notes in a star shape are harder to read than in columns: a minimum gap between notes, nothing else to hit during a held note, and chords only in Hard and Expert.

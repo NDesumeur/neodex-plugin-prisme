@@ -20,6 +20,10 @@ Les points d'une note augmentent de 1 % par note de combo, jusqu'au double à 10
 
 À la fin, la précision donne une note : **S** à partir de 95 %, **A** à 90 %, **B** à 80 %, **C** à 70 %, **D** en dessous. Score et note sont gardés pour chaque niveau.
 
+## Écran de fin
+
+À la fin du morceau, sous la note, une courbe montre ta précision le long du morceau : en haut, tout en Parfait ; en vert quand c'est juste, en jaune quand ça se gâte, en rouge quand ça décroche. Les petits traits rouges dessous marquent les notes ratées. Tu vois tout de suite le passage à retravailler.
+
 ## Chansons
 
 L'onglet **Chansons** reprend les 1200 morceaux de Rythme. La difficulté de chaque niveau est calculée d'après ses notes, de 1 à 10 étoiles ; plus elle est haute, plus les notes arrivent vite. Les niveaux sont plus légers que dans Rythme, parce qu'en étoile les notes se lisent moins bien qu'en colonnes : un écart minimum entre les notes, rien d'autre à frapper pendant une note tenue, et des accords seulement en Difficile et Expert.
