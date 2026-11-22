@@ -1,9 +1,9 @@
 {
   "id": "neodex.prisme",
   "name": "Prisme",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "author": "NDesumeur",
-  "description": "Jeu de rythme au clavier : les notes jaillissent d'un cristal central vers quatre socles, frappe la bonne flèche (ou ZQSD) quand elles s'y posent, avec accords à deux touches et notes longues à tenir. Les 1200 morceaux de Rythme notés de 1 à 10 étoiles, ou des niveaux créés depuis ta musique. Parfait, Bien ou OK, combo, note de S à D et décalage réglé tout seul. Écran de fin avec la courbe de précision le long du morceau.",
+  "description": "Jeu de rythme au clavier : les notes jaillissent d'un cristal central vers quatre socles, frappe la bonne flèche (ou ZQSD) quand elles s'y posent, avec accords à deux touches et notes longues à tenir. Les 1200 morceaux de Rythme notés de 1 à 10 étoiles, ou des niveaux créés depuis ta musique. Parfait, Bien ou OK, combo, note de S à D et décalage réglé tout seul. Écran de fin avec la courbe de précision le long du morceau. Socles qui tournent, trajectoires courbes, notes de réfraction, mode miroir, cristal qui change de forme, collection de facettes.",
   "icon": "icon.png",
   "entry": "index.js",
   "view": "prisme",

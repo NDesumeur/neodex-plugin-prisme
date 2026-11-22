@@ -32,6 +32,18 @@ L'onglet **Chansons** reprend les 1200 morceaux de Rythme. La difficulté de cha
 
 Dans **Mes musiques**, crée un niveau à partir d'un **fichier audio** importé ou d'une musique de ta bibliothèque **NeoMusic** : le jeu trouve son tempo et ses temps forts et place les notes dessus, à la **difficulté** choisie (1 à 10 étoiles).
 
+## Variantes
+
+- **Rotation** (Douce ou Forte) : toutes les 2 mesures, l'étoile des socles tourne. Chaque touche garde son socle : la flèche dessinée dedans te dit lequel frapper.
+- **Trajectoire courbe** : les cristaux arrivent en spirale au lieu d'aller tout droit.
+- **Miroir** : gauche et droite échangées.
+- **Réfraction** (Difficile et Expert) : sur un accord, un seul cristal part du centre et se sépare en deux à mi-chemin.
+- Le cristal du centre change de forme toutes les 8 mesures.
+
+## Facettes
+
+Chaque niveau réussi rapporte des facettes (S : 3, A : 2, B : 1), comptées dans les records. Toutes les 15 facettes, le cristal du centre prend une nouvelle couleur : violet, bleu, vert, or, puis blanc.
+
 ## Réglages
 
 - **Volume** de la musique.

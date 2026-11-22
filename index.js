@@ -9,7 +9,7 @@ const HTML = `<div class="appWrap wide">
       <div class="row"><button class="btn" id="rhTabSongs">CHANSONS</button><button class="btn" id="rhTabMine">MES MUSIQUES</button></div>
       <div class="sysCard rhImport" id="rhImport" style="display:none"><div class="row"><button class="btn main" id="rhFileBtn">IMPORTER UN FICHIER AUDIO</button><input type="file" id="rhFile" accept="audio/*,.mp3,.m4a,.ogg,.opus,.wav,.flac,.webm" hidden></div><div class="row"><select class="f" id="rhMuList"></select><button class="btn" id="rhMuBtn">CRÉER LE NIVEAU</button></div><div class="row"><label>Difficulté <select class="f" id="rhStars"><option value="1">1 ★</option><option value="2">2 ★</option><option value="3" selected>3 ★</option><option value="4">4 ★</option><option value="5">5 ★</option><option value="6">6 ★</option><option value="7">7 ★</option><option value="8">8 ★</option><option value="9">9 ★</option><option value="10">10 ★</option></select></label></div><span class="hint" id="rhImpMsg">Un fichier ou une musique de NeoMusic : le jeu trouve son tempo et ses temps forts et en fait un niveau.</span></div>
       <div id="rhSongs"></div>
-      <div class="sysCard rhOpts"><label>Volume <input type="range" id="rhVol" min="0" max="100" value="70"></label><label>Son des clics <select class="f gSel" id="rhClick"><option value="0" selected>Doux</option><option value="1">Clap</option><option value="2">Bois</option><option value="3">Grosse caisse</option><option value="4">Cristal</option><option value="5">Pop</option><option value="6">Charleston</option><option value="7">Caisse claire</option><option value="8">Pluck</option><option value="9">Tok</option><option value="-1">Aucun</option></select></label><label>Décalage <input type="number" class="f" id="rhOffset" min="-300" max="300" step="5" value="0" style="width:80px" title="Réglé tout seul après chaque partie"> ms</label></div>
+      <div class="sysCard rhOpts"><label>Volume <input type="range" id="rhVol" min="0" max="100" value="70"></label><label>Son des clics <select class="f gSel" id="rhClick"><option value="0" selected>Doux</option><option value="1">Clap</option><option value="2">Bois</option><option value="3">Grosse caisse</option><option value="4">Cristal</option><option value="5">Pop</option><option value="6">Charleston</option><option value="7">Caisse claire</option><option value="8">Pluck</option><option value="9">Tok</option><option value="-1">Aucun</option></select></label><label title="Les socles tournent pendant le morceau (chaque touche garde son socle)">Rotation <select class="f gSel" id="prRot"><option value="0" selected>Aucune</option><option value="1">Douce</option><option value="2">Forte</option></select></label><label title="Les notes vont tout droit ou en spirale vers leur socle">Trajectoire <select class="f gSel" id="prPath"><option value="0" selected>Droite</option><option value="1">Courbe</option></select></label><label title="Gauche et droite échangées">Miroir <select class="f gSel" id="prMir"><option value="0" selected>Non</option><option value="1">Oui</option></select></label><label>Décalage <input type="number" class="f" id="rhOffset" min="-300" max="300" step="5" value="0" style="width:80px" title="Réglé tout seul après chaque partie"> ms</label></div>
       <div class="hint">Les notes partent du cristal du centre vers les quatre socles : frappe quand la note arrive dans son socle (le bord du socle devient blanc). Des coins blancs autour de deux notes : un accord, appuie sur les deux touches à la fois (ou clique en diagonale).</div><div class="hint">Plusieurs flèches à la fois sur les accords ; garde la touche enfoncée tant que le rayon d'une note longue n'est pas passé.</div><div class="hint">La difficulté de chaque niveau est calculée sur ses notes : de 1★ à 10★.</div>
     </div></div>
 </div>`;
@@ -1058,13 +1058,13 @@ $('rhFs').onclick = () => { rhFull(!document.fullscreenElement); $('rhFs').blur(
 $('rhOffset').addEventListener('change', () => { rhOffMs = +$('rhOffset').value; });
 $('rhClick').onchange = () => { rhAudio(); rhCtx.resume(); rhClick(); };  // le son choisi, pour l'entendre
 $('rhVol').oninput = () => { if (rhOut) rhOut.gain.value = +$('rhVol').value / 100 * .6; };
-for (const id of ['rhVol', 'rhClick', 'rhOffset']) $(id).addEventListener('change', () => { gstore('rhythmPrefs', {})[id] = $(id).value; saveGames(); });
+for (const id of ['rhVol', 'rhClick', 'rhOffset', 'prRot', 'prPath', 'prMir']) $(id).addEventListener('change', () => { gstore('rhythmPrefs', {})[id] = $(id).value; saveGames(); });
 setInterval(() => { if (rhCtx?.state === 'running' && (!view.classList.contains('on') || rh?.mode !== 'play')) rhCtx.suspend(); }, 200);  // la musique s'arrête avec la partie
 document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) rhPause(); });  // Échap sort du plein écran : on met en pause
 $('gNew').onclick = () => { if (rh) rhSelect(rh.song, rh.diff); $('gNew').blur(); };
-function rhInfo() { const res = games.rhythm || {}, all = Object.values(res); showStats([['Morceaux joués', all.length], ['Notes S', all.filter(r => r.grade === 'S').length], ['Meilleur combo', all.reduce((m, r) => Math.max(m, r.combo || 0), 0)]]); }
+function rhInfo() { const res = games.rhythm || {}, all = Object.values(res); showStats([['Facettes', prFacets()], ['Morceaux joués', all.length], ['Notes S', all.filter(r => r.grade === 'S').length], ['Meilleur combo', all.reduce((m, r) => Math.max(m, r.combo || 0), 0)]]); }
 function rhOpen() {
-  const p = games.rhythmPrefs || {}; for (const id of ['rhVol', 'rhClick', 'rhOffset']) if (p[id] != null) $(id).value = p[id];
+  const p = games.rhythmPrefs || {}; for (const id of ['rhVol', 'rhClick', 'rhOffset', 'prRot', 'prPath', 'prMir']) if (p[id] != null) $(id).value = p[id];
   rhOffMs = +$('rhOffset').value; rhInfo();
   if (rh) { rhList(); return gameLoop(rh, RHG.key, RHG.update, rhDrawAll); }
   const last = games.rhythmLast || {song: 0, diff: 'normal'}; rhSelect(last.song, last.diff).catch(() => rhSelect(0, 'normal'));
@@ -1081,13 +1081,14 @@ const RHG = {key: 'prisme', factor: .85, color: '#ff4fa8',
     let free = -9, lastChord = -99;
     for (const n of base) {
       const p = out.at(-1);
-      if (p && Math.abs(p.t - n.t) < .01) { if (lv >= 2 && !p.len && !n.len && n.lane !== p.lane && n.t - lastChord >= chordGap) { out.push({t: p.t, lane: n.lane, len: 0}); lastChord = n.t; } continue; }
+      if (p && Math.abs(p.t - n.t) < .01) { if (lv >= 2 && !p.len && !n.len && n.lane !== p.lane && n.t - lastChord >= chordGap) { out.push({t: p.t, lane: n.lane, len: 0, from: p.lane}); lastChord = n.t; } continue; }
       if (n.t < free) continue;
       out.push({t: n.t, lane: n.lane, len: n.len || 0}); free = n.t + (n.len || 0) + (n.len ? .12 : gap);
     }
+    if (prVal('prMir', '0') === '1') for (const n of out) { n.lane = PR_MIR[n.lane]; if (n.from != null) n.from = PR_MIR[n.from]; }  // miroir
     return out;
   },
-  reset() { Object.assign(rh, {down: [false, false, false, false], flash: [0, 0, 0, 0], judge: null}); },
+  reset() { Object.assign(rh, {down: [false, false, false, false], flash: [0, 0, 0, 0], judge: null, rot: 0, rots: prRots(rh.info, rh.c.len, +prVal('prRot', '0')), tier: prTier()}); },
   update() {
     const now = rhNow(), late = RH.WIN.at(-1)[0] / PR_PK;
     for (const n of rh.notes) {
@@ -1102,7 +1103,46 @@ const RHG = {key: 'prisme', factor: .85, color: '#ff4fa8',
   draw() { prDraw(); },
 };
 const PR_PK = .6;  // plus indulgent que Rythme : PARFAIT à ±75 ms, BIEN à ±150 ms, OK à ±230 ms
-const prPad = l => [PR.CX + PR.DIRS[l][0] * PR.D, PR.CY + PR.DIRS[l][1] * PR.D];
+/* ---------- 1.3.0 : socles qui tournent, trajectoires courbes, notes de réfraction, miroir, cristal qui change de forme, facettes ---------- */
+const prVal = (id, d) => { const v = $(id)?.value; return v == null || v === '' ? d : v; };
+const PR_MIR = [3, 1, 2, 0];
+const prAng = l => Math.atan2(PR.DIRS[l][1], PR.DIRS[l][0]);
+const prSmooth = x => { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
+// la rotation : toutes les 2 mesures, l'étoile des socles prend un nouvel angle (en un temps, en douceur) ; Douce : un huitième ou un quart de tour, Forte : jusqu'au demi-tour
+function prRots(info, len, mode) {
+  if (!mode) return null;
+  const sec = 8 * 60 / info.bpm, r = seeded(info.name.length * 131 + Math.round(info.bpm)), steps = mode === 2 ? [-1, -.75, -.5, -.25, .25, .5, .75, 1] : [-.5, -.25, .25, .5], A = [0, 0];
+  for (let k = 2; k * sec < len + sec * 2; k++) { let a; do a = r() < .25 ? 0 : steps[Math.floor(r() * steps.length)] * Math.PI; while (a === A.at(-1)); A.push(a); }
+  return {sec, beat: 60 / info.bpm, A};
+}
+function prRotAt(now) {
+  const R = rh.rots; if (!R || now <= 0) return 0;
+  const k = Math.min(R.A.length - 1, Math.floor(now / R.sec)), a0 = R.A[Math.max(0, k - 1)], a1 = R.A[k];
+  return a0 + (a1 - a0) * prSmooth((now - k * R.sec) / R.beat);
+}
+{ const R = prRots({name: 'essai', bpm: 120}, 60, 2); console.assert(R.A.length > 10 && R.A[0] === 0 && R.A.slice(2).every(a => Math.abs(a) <= Math.PI + 1e-9), 'prRots'); }
+// la position d'une note à la distance d du centre : sur le rayon de son socle (tourné), en spirale si les trajectoires sont courbes ;
+// une note de réfraction part sur le rayon de sa jumelle et s'en sépare à mi-chemin
+function prXY(l, d, rot, curve, from) {
+  let a = prAng(l);
+  if (from != null && from !== l) { let b = prAng(from), df = a - b; while (df > Math.PI) df -= 2 * Math.PI; while (df < -Math.PI) df += 2 * Math.PI; if (Math.abs(Math.abs(df) - Math.PI) < 1e-6) df = Math.PI; a = b + df * prSmooth((d - PR.D * .35) / (PR.D * .4)); }
+  a += rot + (curve ? (1 - d / PR.D) * 1.1 : 0);
+  return [PR.CX + Math.cos(a) * d, PR.CY + Math.sin(a) * d];
+}
+{ const [x, y] = prXY(3, PR.D, 0, 1, 0), [x2, y2] = prXY(0, PR.D, Math.PI, 0); console.assert(Math.abs(x - PR.CX - PR.D) < 1e-6 && Math.abs(y - PR.CY) < 1e-6 && Math.abs(x2 - PR.CX - PR.D) < 1e-6, 'prXY'); }
+// le cristal du centre : sa forme change toutes les 8 mesures, sa couleur avec ta collection de facettes
+const PR_SHAPES = [
+  ['.....kk.....', '....kwLk....', '...kwLLak...', '..kwLLaaak..', '.kwLLaaaaDk.', 'kLLLaaaaaDDk', 'kaaaaaaaDDDk', '.kaaaaaDDDk.', '..kaaaDDDk..', '...kaDDDk...', '....kDDk....', '.....kk.....'],
+  ['...kkkkkk...', '..kwLLLLak..', '.kwLLLaaaak.', 'kwLLLaaaaaDk', 'kLLLaaaaaaDk', 'kLLaaaaaaaDk', 'kLaaaaaaaDDk', 'kaaaaaaaaDDk', 'kaaaaaaaDDDk', '.kaaaaaDDDk.', '..kaaDDDDk..', '...kkkkkk...'],
+  ['....kkkk....', '....kwLk....', '....kLak....', 'kkkkkLaakkkk', 'kwLLLLaaaaDk', 'kLLLaaaaaaDk', 'kLaaaaaaaDDk', 'kaaaaaaaDDDk', 'kkkkkaaDkkkk', '....kaDk....', '....kDDk....', '....kkkk....'],
+  ['kkkkkkkkkkkk', 'kwwLLLLLLaak', 'kwLLLLLaaaDk', 'kLLLLaaaaaDk', 'kLLLaaaaaaDk', 'kLLaaaaaaaDk', 'kLaaaaaaaDDk', 'kLaaaaaaDDDk', 'kaaaaaaaDDDk', 'kaaaaaaDDDDk', 'kaaDDDDDDDDk', 'kkkkkkkkkkkk']];
+const PR_TIERS = [['#e4d0ff', '#b07aff', '#6a3ab0'], ['#c8f4ff', '#3fb8ff', '#1a5aa8'], ['#d0ffd8', '#5fdf6a', '#2a8a3a'], ['#fff4c0', '#ffc83a', '#a8741a'], ['#ffffff', '#d8e8ff', '#8a9ac8']];
+const prCores = new Map();
+function prCore(s, t) { const k = s + ':' + t; if (!prCores.has(k)) { const [L, a, D] = PR_TIERS[t]; prCores.set(k, spr(PR_SHAPES[s], {k: '#05010b', w: '#ffffff', L, a, D})); } return prCores.get(k); }
+// les facettes : chaque niveau réussi en ajoute (S : 3, A : 2, B : 1) ; toutes les 15, le cristal change de couleur
+const prFacets = () => Object.values(games?.rhythm || {}).reduce((s, r) => s + ({S: 3, A: 2, B: 1}[r.grade] || 0), 0);
+const prTier = () => Math.min(PR_TIERS.length - 1, Math.floor(prFacets() / 15));
+const prPad = l => prXY(l, PR.D, rh?.rot || 0, 0).map(Math.round);
 function prBurst(l, n) { const [x, y] = prPad(l); for (let i = 0; i < n; i++) { const a = Math.random() * 2 * Math.PI, v = 1 + Math.random() * 2; rh.sparks.push({x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 18, col: PR.COLS[l]}); } }
 function prJudge(n, w) { rh.judge = {text: w ? w[1] : 'RATÉ', col: w ? w[3] : '#ff4a5a', t: 24, lane: n.lane}; if (w) { rh.flash[n.lane] = 8; prBurst(n.lane, 8); } }
 function prKey(l, down) {
@@ -1114,13 +1154,12 @@ function prKey(l, down) {
 const prGemRows = [['.k.', 'kak', '.k.'], ['..k..', '.kLk.', 'kLaak', '.kaDk', '..k..'], ['...k...', '..kLk..', '.kLLak.', 'kLLaaDk', '.kaaDk.', '..kDk..', '...k...'], ['....k....', '...kLk...', '..kLwak..', '.kLLaaak.', 'kLLaaaaDk', '.kaaaaDk.', '..kaaDk..', '...kDk...', '....k....']];
 const prShade = (c, f) => '#' + [1, 3, 5].map(i => Math.max(0, Math.min(255, Math.round(parseInt(c.slice(i, i + 2), 16) * f))).toString(16).padStart(2, '0')).join('');
 const PR_GEMS = PR.COLS.map(c => prGemRows.map(r => spr(r, {k: '#05010b', a: c, L: prShade(c, 1.5), D: prShade(c, .55), w: '#ffffff'})));
+const PR_DIM = PR.COLS.map(c => prShade(c, .35));
 const PR_GHOST = prGemRows.map(r => spr(r, {k: '#05010b', a: '#3a3058', L: '#4a4070', D: '#2a2040', w: '#5a5080'}));
-const PR_CORE = spr(['.....kk.....', '....kwLk....', '...kwLLak...', '..kwLLaaak..', '.kwLLaaaaDk.', 'kLLLaaaaaDDk', 'kaaaaaaaDDDk', '.kaaaaaDDDk.', '..kaaaDDDk..', '...kaDDDk...', '....kDDk....', '.....kk.....'], {k: '#05010b', w: '#ffffff', L: '#e4d0ff', a: '#b07aff', D: '#6a3ab0'});
 const PR_BG = cnv(W, H, b => {  // le fond : une salle de cristal tramée, des rayons en pointillés vers chaque socle
   px(b, '#06030f', 0, 0, W, H);
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const d = Math.hypot(x - PR.CX, y - PR.CY), r = Math.floor(d / 12); if ((x + y) % 2 === 0 && r % 2 === 0 && d < 112 && d > 18) px(b, '#0e0820', x, y); }
   const r = seeded(77); for (let i = 0; i < 90; i++) px(b, r() < .3 ? '#5a4a8a' : '#2a2050', Math.floor(r() * W), Math.floor(r() * H));
-  for (let l = 0; l < 4; l++) { const [dx, dy] = PR.DIRS[l]; for (let d = 16; d < PR.D - 10; d += 4) px(b, prShade(PR.COLS[l], .35), PR.CX + dx * d, PR.CY + dy * d, 1, 1); }
   for (let k = 0; k < 4; k++) { const a = Math.PI / 4 + k * Math.PI / 2; for (let d = 20; d < 120; d += 6) px(b, '#160e2c', PR.CX + Math.cos(a) * d, PR.CY + Math.sin(a) * d); }
 });
 function prSocle(l, on, ready) {  // un socle en losange, plus clair quand on appuie ; son bord blanchit quand une note est dedans (c'est le moment)
@@ -1130,27 +1169,28 @@ function prSocle(l, on, ready) {  // un socle en losange, plus clair quand on ap
 }
 function prDraw() {
   const live = rh.mode === 'play' || rh.mode === 'pause', now = live ? rhNow() : -2, beat = 60 / rh.info.bpm, ph = ((now - (rh.c.beat0 || 0)) % beat + beat) % beat, pulse = now > 0 ? Math.max(0, 1 - ph / beat * 3) : 0;
-  const app = rh.stars > 6 ? 1.3 : rh.stars > 3 ? 1.55 : 1.85, sp = (PR.D - 10) / app;
+  const app = rh.stars > 6 ? 1.3 : rh.stars > 3 ? 1.55 : 1.85, sp = (PR.D - 10) / app, rot = rh.rot = prRotAt(now), curve = prVal('prPath', '0') === '1';
   g.drawImage(PR_BG, 0, 0);
-  for (let l = 0; l < 4; l++) if (rh.flash?.[l] || rh.down?.[l]) { const [dx, dy] = PR.DIRS[l]; g.globalAlpha = rh.down[l] ? .35 : rh.flash[l] / 24; for (let d = 14; d < PR.D; d += 2) px(g, PR.COLS[l], PR.CX + dx * d - (dy ? 1 : 0), PR.CY + dy * d - (dx ? 1 : 0), dy ? 3 : 1, dx ? 3 : 1); g.globalAlpha = 1; }
+  for (let l = 0; l < 4; l++) for (let d = 16; d < PR.D - 10; d += 4) { const [x, y] = prXY(l, d, rot, curve); px(g, PR_DIM[l], x, y, 1, 1); }  // les rayons pointillés vers chaque socle
+  for (let l = 0; l < 4; l++) if (rh.flash?.[l] || rh.down?.[l]) { g.globalAlpha = rh.down[l] ? .35 : rh.flash[l] / 24; for (let d = 14; d < PR.D; d += 2) { const [x, y] = prXY(l, d, rot, 0); px(g, PR.COLS[l], x - 1, y - 1, 2, 2); } g.globalAlpha = 1; }
   for (let l = 0; l < 4; l++) prSocle(l, rh.down?.[l], live && rh.notes.some(n => !n.judged && n.lane === l && Math.abs(n.t - now) <= RH.WIN[1][0] / PR_PK));
   // les notes partent du cristal central et arrivent DANS leur socle au moment de frapper : d = distance au centre
   const dist = t => PR.D - (t - now) * sp;
   // les notes longues : un rayon de la note (côté socle) jusqu'à sa fin (côté centre)
   for (const n of rh.notes) {
     if (!n.len || n.tail || n.broken && !n.held) continue; const d1 = dist(n.t), d2 = dist(n.t + n.len); if (d1 < 12 || d2 > PR.D) continue;
-    const a = n.held ? PR.D : Math.min(PR.D, d1), b = Math.max(12, d2), [dx, dy] = PR.DIRS[n.lane];
-    for (let d = b; d <= a; d++) px(g, n.missed ? '#3a3058' : PR.COLS[n.lane], PR.CX + dx * d - (dy ? 2 : 0), PR.CY + dy * d - (dx ? 2 : 0), dy ? 5 : 1, dx ? 5 : 1);
+    const a = n.held ? PR.D : Math.min(PR.D, d1), b = Math.max(12, d2), col = n.missed ? '#3a3058' : PR.COLS[n.lane];
+    for (let d = b; d <= a; d++) { const [x, y] = prXY(n.lane, d, rot, curve); px(g, col, x - 2, y - 2, 4, 4); }
   }
   for (let i = rh.notes.length - 1; i >= 0; i--) {
     const n = rh.notes[i]; if (n.judged && !n.missed) continue; const d = dist(n.t); if (d > PR.D + 14 || d < 12) continue;
-    const img = (n.missed ? PR_GHOST : PR_GEMS[n.lane])[3], [dx, dy] = PR.DIRS[n.lane], x = Math.round(PR.CX + dx * d), y = Math.round(PR.CY + dy * d);
+    const img = (n.missed ? PR_GHOST : PR_GEMS[n.lane])[3], [x, y] = prXY(n.lane, d, rot, curve, n.from).map(Math.round);
     g.drawImage(img, x - 4, y - 4);
     if (!n.missed && rh.notes.some(o => o !== n && !o.judged && Math.abs(o.t - n.t) < .01)) for (const [cx, cy] of [[-6, -6], [6, -6], [-6, 6], [6, 6]]) { px(g, '#ffffff', x + cx - (cx < 0 ? 0 : 1), y + cy, 2, 1); px(g, '#ffffff', x + cx, y + cy - (cy < 0 ? 0 : 1), 1, 2); }  // accord : des coins blancs, il faut deux touches
   }
   // le cristal du centre bat la mesure
-  const s = pulse > .4 ? 1 : 0; g.drawImage(PR_CORE, PR.CX - 6, PR.CY - 6 - s);
-  if (pulse > .4) for (let k = 0; k < 4; k++) px(g, '#e4d0ff', PR.CX + PR.DIRS[k][0] * 9, PR.CY + PR.DIRS[k][1] * 9, 1, 1);
+  const s = pulse > .4 ? 1 : 0; g.drawImage(prCore(Math.floor(Math.max(0, now) / (32 * beat)) % PR_SHAPES.length, rh.tier || 0), PR.CX - 6, PR.CY - 6 - s);  // une forme toutes les 8 mesures
+  if (pulse > .4) for (let k = 0; k < 4; k++) { const [x, y] = prXY(k, 9, rot, 0); px(g, PR_TIERS[rh.tier || 0][0], x, y, 1, 1); }
   for (const p of rh.sparks) { g.globalAlpha = p.life / 18; px(g, p.col, p.x, p.y, 2, 2); g.globalAlpha = 1; }
   if (rh.mode !== 'ready' && rh.mode !== 'load') {
     rhProgress(now, '#ff4fa8'); pxFont(g, String(rh.score).padStart(7, '0'), 4, 12, '#ffffff', 7); if (rh.combo > 4) pxFont(g, rh.combo + ' combo', W - 4, 12, '#ffd84a', 7, 'right');
@@ -1169,7 +1209,7 @@ document.addEventListener('keydown', e => {
 document.addEventListener('keyup', e => { if (!rh) return; const l = prLane(e); if (l >= 0) prKey(l, false); if (e.key === ' ' && keyOk(e)) e.preventDefault(); });
 cv.onpointerdown = e => {  // à la souris : cliquer du côté du socle visé
   e.preventDefault(); if (!rh) return; if (rh.mode !== 'play') return rhPress();
-  const [x, y] = cpos(e), dx = x - PR.CX, dy = y - PR.CY, h = dx < 0 ? 0 : 3, v = dy > 0 ? 1 : 2, r = Math.abs(dx) / Math.max(1, Math.abs(dy));
+  const [x, y] = cpos(e), ra = -(rh.rot || 0), ex = x - PR.CX, ey = y - PR.CY, dx = ex * Math.cos(ra) - ey * Math.sin(ra), dy = ex * Math.sin(ra) + ey * Math.cos(ra), h = dx < 0 ? 0 : 3, v = dy > 0 ? 1 : 2, r = Math.abs(dx) / Math.max(1, Math.abs(dy));
   const ls = r > 2 ? [h] : r < .5 ? [v] : [h, v];  // un clic en diagonale appuie sur les deux directions voisines
   for (const l of ls) prKey(l, true);
   const id = e.pointerId, up = ev => { if (ev.pointerId !== id) return; for (const l of ls) prKey(l, false); removeEventListener('pointerup', up); }; addEventListener('pointerup', up);  // chaque doigt relâche seulement ses directions
@@ -1180,8 +1220,11 @@ cv.onpointerdown = e => {  // à la souris : cliquer du côté du socle visé
   rhAudio(); const keep = rh; rh = {mode: 'play', t0: 0, down: [false, false, false, false], flash: [0, 0, 0, 0], sparks: [], combo: 0, maxCombo: 0, score: 0, dts: [], counts: {PARFAIT: 0, BIEN: 0, OK: 0, 'RATÉ': 0}, notes: []};
   const t0 = rhNow(); rh.notes = [{t: t0, lane: 0, len: 0}, {t: t0, lane: 3, len: 0}]; prKey(0, true); prKey(3, true); const both = rh.notes.every(n => n.judged && !n.missed); rh = keep;
   const f = RHG.chart(rhChart(c, 'facile'), c, 'facile'), spaced = f.every((n, i) => !i || n.t - f[i - 1].t >= .5 - 1e-6 || n.t >= f[i - 1].t + f[i - 1].len + .12 - 1e-6);
-  console.assert(new Set(all).size === all.length && x.every(n => n.lane >= 0 && n.lane < 4) && x.some(n => n.len > 0) && both && spaced && x.every((n, i) => !i || n.t >= x[i - 1].t + x[i - 1].len), 'prisme', both, spaced);
+  const refr = x.filter(n => n.from != null).every(n => x.some(o => o !== n && Math.abs(o.t - n.t) < .01 && o.lane === n.from));
+  console.assert(refr && new Set(all).size === all.length && x.every(n => n.lane >= 0 && n.lane < 4) && x.some(n => n.len > 0) && both && spaced && x.every((n, i) => !i || n.t >= x[i - 1].t + x[i - 1].len), 'prisme', both, spaced);
 }
+$('prRot').addEventListener('change', () => { if (rh) rh.rots = prRots(rh.info, rh.c.len, +prVal('prRot', '0')); });
+for (const id of ['prMir']) $(id).addEventListener('change', () => { if (rh && rh.mode !== 'play') rhSelect(rh.song, rh.diff); });
 cv.__rh = {st: () => rh, finish: hist => { rh.hist = hist; rh.mode = 'play'; rhCheckEnd(1e9); }};
 ctx.onOpen(() => rhOpen());
 

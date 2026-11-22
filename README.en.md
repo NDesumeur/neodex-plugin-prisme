@@ -32,6 +32,18 @@ The **Songs** tab offers the 1200 Rythme tracks. Each level's difficulty is work
 
 In **My music**, create a level from an imported **audio file** or a track from your **NeoMusic** library: the game finds its tempo and strong beats and places the notes on them, at the chosen **difficulty** (1 to 10 stars).
 
+## Variants
+
+- **Rotation** (Gentle or Strong): every 2 bars, the star of pads turns. Each key keeps its pad: the arrow drawn inside tells you which one to hit.
+- **Curved path**: crystals spiral in instead of going straight.
+- **Mirror**: left and right swapped.
+- **Refraction** (Hard and Expert): on a chord, a single crystal leaves the centre and splits in two halfway.
+- The centre crystal changes shape every 8 bars.
+
+## Facets
+
+Each cleared level gives facets (S: 3, A: 2, B: 1), counted in the records. Every 15 facets, the centre crystal takes a new colour: purple, blue, green, gold, then white.
+
 ## Settings
 
 - Music **volume**.
